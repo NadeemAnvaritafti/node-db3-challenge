@@ -44,12 +44,26 @@ function add(scheme) {
 function update(changes, id) {
     return db('schemes')
         .where({ id })
-        .update(changes);
+        .update(changes)
+        .then(count => {
+            if (count > 0) {
+                return findById(id);
+            }
+        })
 }
 
 
 function remove(id) {
+    const deletedScheme = findById(id)
+    .then(scheme => {
+        return scheme;
+    })
     return db('schemes')
         .where({ id })
-        .del();
+        .del()
+        .then(count => {
+            if (count > 0) {
+                return deletedScheme;
+            }
+        })
 }
